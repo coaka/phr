@@ -1,0 +1,179 @@
+\documentclass{article}        
+
+\definecolor{lightgray}{gray}{0.9}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+%
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\begin{document}               
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  frame=lines,
+  numbers=left,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
+\title{Integrate PHR source code into NS2}
+
+\emph{PHR} directory contains three files, i.e. \emph{phr.cc}, \emph{phr.h}, \emp	 and \emph{phr\_packet.h}.
+In order to integrate and compile \emph{PHR} protocol in \emph{NS2}, the following steps should fulfilled.
+
+\begin{itemize}
+\item It should install a fresh copy of \emph{NS2.35}.
+\item Download and copy \emph{PHR} directory into \emph{~/ns-allinone-2.35/ns-2.35/}.
+\item Add \emph{case PT\_PHR} to \emph{~/ns-allinone-2.35/ns-2.35/queue/priqueue.cc} from line $94$.
+\item \emph{PHR} packet header need to be defined, \emph{~/ns-allinone-2.35/ns-2.35/common/packet.h} file
+should modified accordingly by adding \emph{\#define HDR\_PHR(p)      (hdr\_phr::access(p))} after line $62$.
+
+\item Modifying same file, PT\_NTYPE should change to $74$, and for \emph{PHR} protocol PT\_PHR = $73$. 
+If you have already installed another routing protocol. Just make sure PT\_NTYPE is last, and protocol number is ordered 
+sequentially. Code in~\ref{pkt-h} shows the changes to \emph{packet.h}.
+
+\lstset{language=C++}
+\begin{lstlisting}[caption= Packet header file changes \label{pkt-h} ,float]
+static const packet_t PT_PHR = 73;
+static packet_t PT_NTYPE = 74; // This MUST be the LAST one
+\end{lstlisting}
+
+\item Add the \emph{type == PT\_PHR} as shown in~\ref{pkt-h} at line $280$ of the same \emph{packet.h}.
+\begin{lstlisting}[caption= Make packet has high priority \label{pkt-h} ,float]
+type == PT_PHR ||  
+type == PT_MDART)
+\end{lstlisting}
+Then add \emph{name\_[PT\_PHR]="PHR"} in line $420$.
+  
+\item In order to provide a trace functionality into the simulation, it should enable \emph{NS2} to trace
+all the events in the simulation, to do that, \emph{~/ns-allinone-2.35/ns-2.35/trace/cmu-trace.h \& cmu-trace.cc}
+ files need to be modified.
+\item First, define drop reasons by adding lines in~\ref{drp} into \emph{cmu-trace.h} at line$85$. 
+\begin{lstlisting}[caption= Define drop reasons \label{drp} ,float]
+#define DROP_PHR_PH_CLOSER            "CLOSER"//PH is closer to D
+#define DROP_PHR_DKNOW                "DKNOW"// know flag set and don't know about D.
+\end{lstlisting}
+
+\item Define trace function in \emph{cmu-trace.h} at line $165$ as shown in~\ref{trace-fun}. 
+\begin{lstlisting}[caption= Define trace function \label{trace-fun} ]
+void    format_phr(Packet *p, int offset);
+\end{lstlisting}
+
+\item The implementation of the trace function should be added in \emph{cmu-trace.cc} at line $1182$ as shown in~\ref{trace-fun-imp}.
+\begin{lstlisting}[caption= Main body of PHR trace function. \label{trace-fun-imp} ]
+#include <phr/phr_packet.h>   //PHR protocol
+// main body of the trace function.\
+void
+CMUTrace::format_phr(Packet * p, int offset)
+	{struct hdr_phr *phr = HDR_PHR(p);
+	struct hdr_phr_bc *bc = HDR_PHR_BC(p);
+	switch (phr->pkt_type) {
+	case PHR_BC:
+		if (pt_->tagged())
+			{sprintf(pt_->buffer() + offset,
+				"-PHR:t %x -PHR:h %d -PHR:b %d -PHR:s %d "
+				"-PHR:ts %f "
+				"-PHR:c PHR ",
+				bc->bc_type,
+				bc->bc_hop_count,
+				bc->bc_bcast_id,
+				bc->bc_src,
+				bc->bc_timestamp);
+		} else if (newtrace_)
+		 	{sprintf(pt_->buffer() + offset,
+				"-P phr -Pt 0x%x -Ph %d -Pb %d -Ps %d -Pts %f -Pc PHR ",
+				bc->bc_type,
+				bc->bc_hop_count,
+				bc->bc_bcast_id,
+				bc->bc_src,
+				bc->bc_timestamp);
+		} else {sprintf(pt_->buffer() + offset,
+				"[0x%x %d %d [%d] [%f]] (PHR)",
+				bc->bc_type,
+				bc->bc_hop_count,
+				bc->bc_bcast_id,
+				bc->bc_src,
+				bc->bc_timestamp);
+		}
+		break;
+	default:
+#ifdef WIN32
+		fprintf(stderr,
+			"CMUTrace::format_phr: invalid PHR packet typen");
+#else
+		fprintf(stderr,
+			"%s: invalid PHR packet typen", __FUNCTION__);
+#endif
+		abort();
+	}
+}
+\end{lstlisting}
+
+\item After changing C++ files, TCL files also need to be changed to create \emph{PHR} routing agent to be 
+ used in TCL file. This is done by modifying \emph{~/ns-allinone-2.35/ns-2.35/tcl/lib/ns-packet.tcl}.
+\item Add \emph{PHR} at line $172$
+\item Set routing agent by modifying \emph{~/ns-allinone-2.35/ns-2.35/tcl/lib/ns-lib.tcl} at line $639$ as
+shown in~\ref{set-phr}.
+
+\lstset{language=TCL}
+\begin{lstlisting}[caption= Set PHR agent \label{set-phr} ,float]
+PHR {
+  set ragent [$self create-phr-agent $node]
+}
+\item At line $870$ code in \~\ref{tcl} should be added.
+\begin{lstlisting}[caption= Create PHR agent \label{tcl}, float]
+Simulator instproc create-phr-agent {node}
+	 {set ragent [new Agent/PHR [$node node-addr]]
+   $self at 0.0 "$ragent start"
+   $node set ragent_ $ragent
+   return $ragent
+}
+\end{lstlisting}
+ 
+\item Set port numbers of \emph{PHR} agent (sport is the source port, dport is destination port)
+ by adding code in~\ref{sdport} to \emph{~/ns-allinone-2.35/ns-2.35/tcl/lib/ns-agent.tcl} at line $201$.
+\begin{lstlisting}[caption=Set ports of PHR agent \label{sdport} ,float]
+Agent/PHR instproc init args
+	 {$self next $args
+}
+Agent/PHR set sport_   0
+Agent/PHR set dport_   0
+\end{lstlisting}
+
+
+\item Modify \emph{~/ns-allinone-2.35/ns-2.35/tcl/lib/ns-mobilenode.tcl} by adding code in~\ref{mn} at line $204$.
+\begin{lstlisting}[caption=Set ports of PHR agent \label{mn} ,float]
+# Special processing for PHR
+set phronly [string first "PHR" [$agent info class]]
+if {$phronly!= -1} 
+	{$agent if-queue [$self set ifq_(0)]   ;# ifq between LL and MAC
+}
+\end{lstlisting}
+
+
+\item Modify \emph{~/ns-allinone-2.35/ns-2.35/Makefile} by adding \emph{phr\/phr.o} after \emph{puma\/puma.o } line
+ to the list of object files for \emph{NS2}.
+ 
+ \end{itemize}
+Now, \emph{NS2} should be ready to be recompiled. To do so, run make command in 
+\emph{~/ns-allinone-2.35/ns-2.35/}. When the compilation is done, \emph{NS2} ready to be tested with \emph{PHR}.
+
+
+
+\end{document}
+
+
+
