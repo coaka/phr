@@ -128,11 +128,6 @@ PHR::command (int argc, const char *const *argv)
 	  nodeid = atoi (argv[2]);
 
 	  stop_ = 0;
-	  printf ("IWP: argv[1] is  %s, argv[2] is %d  \n", argv[1],
-		  iNode->address ());
-
-	  printf ("IWP: argv[1] is  %s, argv[2] is %d  \n", argv[1], nodeid);
-
 	  begin = 1;
 	  sendbroadcast (nodeid);
 	  return TCL_OK;
@@ -197,8 +192,7 @@ stoptimer (this)
 {
 
 #ifdef DEBUG
-  // printf ("N (%.6f): Routing agent is initialized for node %d \n",
-  //CURRENT_TIME, id);/
+
 #endif
   index = id;
   seqno = 1;
@@ -224,11 +218,6 @@ stoptimer (this)
   par_insert (0);		//add par inital value to the ParLIST
   time_gab = 0;
   rece_pkts = 0;
-  //printf("known_prob_ is %f \n", known_prob);
-  //printf("Unknown_prob_ is %f \n", unknown_prob);
-  //neighbours=0;
-  //MobileNode *iNode;/
-
 }
 
 // ======================================================================
@@ -262,9 +251,6 @@ void
 SendBroadcastTimer::stop (void)
 {
   Scheduler & s = Scheduler::instance ();
-
-  //Scheduler::instance().schedule(this, &intr, DEFAULT_BEACON_INTERVAL);
-  //     assert(busy_);
   s.cancel (&intr);
   busy_ = 0;
   //   Scheduler::instance().schedule(this, &intr, BCAST_ID_SAVE);
@@ -310,17 +296,12 @@ PHR::sendbroadcast (nsaddr_t dest)
   bc->bc_src = index;
   bc->bc_dst = dest;
   // Here we add the current hops no.from source.
-  //bc->last_node_hops_to_dst = hops;
-  //bc->known = false;
   bc->bc_hop_count = 1;
-  //bc->ph = index; //Previous hop
-
   bc->bc_timestamp = CURRENT_TIME;
 
   // increase sequence number for next bc
   seqno += 1;
-  //hops +=1;
-
+  
 
 #ifdef DEBUG
   printf ("S (%.6f): send broadcast by %d  \n", CURRENT_TIME, index);
@@ -451,22 +432,17 @@ PHR::recv_data (Packet * p)
 
 
   //S is sumation of 5 par s.
-
-
-  // printf("S %f %d length\n",S, length);
   //update the max_par value.
-  //PAR = par_lookup();
+
   if (S > 0)
     {
       PAR = S / length;		//if we need to do average.
 
       if (max_par < PAR)
 	{
-	  max_par = PAR * 2;	//+500;
-	  // 1000 = par*2
-	  // 600=par*3
-	}
-      prob_prob = 1.0 - (PAR / max_par);	//1-(PAR/(PAR+max_par))
+	  max_par = PAR * 2;
+	 	}
+      prob_prob = 1.0 - (PAR / max_par);
 
     }
   //To Avoid full brodcast at the begning.
@@ -475,10 +451,7 @@ PHR::recv_data (Packet * p)
       prob_prob = 0.6;
     }
 
-/*  printf ("S value is %f length is %d PAR is %f max par %f prob is %f \n", S,
-	  length, PAR, max_par, prob_prob);
-  // printf("At time %f node %d par is %lf and max_par is %lf , probability %f \n",CURRENT_TIME, index, PAR, max_par, prob_prob);
-*/
+
   ////////END OF FORWARDING PROBABILITY CALCULATION\\\\\\\\\
 
 
@@ -517,8 +490,6 @@ PHR::recv_data (Packet * p)
 #endif
   //Generate random float value (0,1]
   r = ((float) rand ()) / (float) (RAND_MAX);
-  // printf("r value now ==========> %f \n", r);
-
   if (ih->ttl () == 32)		//If I am the source node
     {
       //fill phr pkt header at source node
@@ -538,9 +509,8 @@ PHR::recv_data (Packet * p)
 	{
 	  ph->dist_to_dest = kn->hops_to_dest;
 	  ph->known_flag = true;
-	  //  printf
-	  // ("I am the source and I know where the dest. is, pkt_id is \n",
-	  //  ch->uid ());
+	  /* printf ("I am the source and I know where the dest. is, pkt_id is \n",*/
+	
 	}
       else
 	{
@@ -574,17 +544,14 @@ PHR::recv_data (Packet * p)
       ch->addr_type () = NS_AF_INET;
       ih->daddr () = (nsaddr_t) ph->dest_;
       dmux_->recv (p, 0);
-      //return;
-
+      
     }
 
   else
-
     {
       KnownList *kn = known_lookup (ph->dest_);
       if (kn == NULL)
 	{
-
 	  KnownList *nbr = known_lookup (neighbour);
 	  if (nbr == NULL)
 	    {
@@ -730,13 +697,7 @@ PHR::recevbroadcast (Packet * p)
     }
   //Cache bcast pkt.
   id_insert (bc->bc_src, bc->bc_bcast_id);
-
-
-
-  //
-
-  //      printf("dest in phr packet is %s \n", bc->bc_dst);
-#ifdef DEBUG
+ #ifdef DEBUG
   printf ("R (%.6f): recv broadcast by %d, src:%d, seqno:%d, hop: %d \n",
 	  CURRENT_TIME, index, bc->bc_src, bc->bc_bcast_id, bc->bc_hop_count);
 #endif
@@ -836,14 +797,14 @@ PHR::par_lookup ()
 {
   ParList *p = parhead.lh_first;
 
-  //for (; p; p = p->par_link.le_next)
-  // {
-  // if (p->count != 0){
-  return p;			//->count;
-  //}
-  //else { return 0;}
+  /*for (; p; p = p->par_link.le_next)
+   {
+   if (p->count != 0){
+  return p;			
+  }
+  else { return 0;}*/
 
-  //  return p;
+    return p;
 }
 
 bool PHR::Reset ()
@@ -858,22 +819,14 @@ bool PHR::Reset ()
     }
   else
     {
-
       return false;
-      //LIST_REMOVE (par, par_link);
-      //par->par_expire = CURRENT_TIME + 2.0; //vaild for 2 sec.
-      //LIST_INSERT_HEAD (&parhead, par, par_link);
-
-    }
+       }
 }
 
 ///This function record no. of received pkts.
-//ParList *
 double
 PHR::Record (bool reset)
 {
-  // ParList *pr = new ParList (pkt_count);
-
   if (!reset)
     {
       pkt_count += 1;
@@ -897,10 +850,6 @@ PHR::length_of_list ()
     }
   return count;
 }
-
-///////////////
-
-
 // ======================================================================
 //  Manage Known list
 // ======================================================================
@@ -912,7 +861,6 @@ PHR::known_insert (nsaddr_t src, u_int8_t hopcount)
   kn->hops_to_dest = hopcount;
   kn->phr_expire = CURRENT_TIME + DEFAULT_ENTRY_EXPIRE;
   LIST_INSERT_HEAD (&knhead, kn, kn_link);
-  //printf ("X:%.3f, Y:%.3f \n",rt->rt_xpos, rt->rt_ypos);
 }
 
 
@@ -1074,70 +1022,7 @@ PHR::rt_insert (nsaddr_t src, u_int32_t id, nsaddr_t nexthop,
   LIST_INSERT_HEAD (&rthead, rt, rt_link);
   //printf ("X:%.3f, Y:%.3f \n",rt->rt_xpos, rt->rt_ypos);
 }
-/*
-void
-PHR::rt_purge ()
-{
-  Routecache *rt = rthead.lh_first;
-  double now = CURRENT_TIME;
-  double delay = 0.0;
-  Packet *p;
 
-  // bind("stop", &stop_);
-  //      printf("stop value for node %d is %d \n", index, stop_);
-  //bind("src", &source);
-  //bind("dest", &dest);
-
-#ifdef DEBUG
-  //  printf("F (%.6f): source is  %d, index is %d and dest is %d \n", CURRENT_TIME, source, index, dest);
-#endif
-  if (index != nodeid && stop_ != 1 && begin == 1)
-    {
-      sendbroadcast (nodeid);
-
-    }
-  for (; rt; rt = rt->rt_link.le_next)
-    {
-      if ((rt->rt_expire < now) && (rt->rt_state == ROUTE_FRESH))
-	{
-	  // if a valid route has expired, purge all packets from
-	  // send buffer and invalidate the route.
-	  while ((p = rqueue.deque (rt->rt_dst)))
-	    {
-#ifdef DEBUG
-	      fprintf (stderr, "%s: calling drop()\n", __FUNCTION__);
-#endif // DEBUG
-	      drop (p, DROP_RTR_NO_ROUTE);
-	    }
-	  rt->rt_state = ROUTE_EXPIRED;
-	}
-      else if (rt->rt_state == ROUTE_FRESH)
-	{
-	  // If the route is not expired,
-	  // and there are packets in the sendbuffer waiting,
-	  // forward them. This should not be needed, but this extra
-	  // check does no harm.
-	  while ((p = rqueue.deque (rt->rt_dst)))
-	    {
-	      // forward(p, rt->rt_nexthop, delay);
-	      delay += 0.001;	// ARP delay
-	    }
-	}
-
-      else if (rqueue.find (rt->rt_dst))
-	// If the route is down and
-	// if there is a packet for this destination waiting in
-	// the sendbuffer, then send out route request. sendRequest
-	// will check whether it is time to really send out request
-	// or not.
-	// This may not be crucial to do it here, as each generated
-	// packet will do a sendRequest anyway.
-	//sendbroadcast(rt->rt_dst);
-	return;
-    }
-
-}
-*/
 Routecache *
 PHR::rt_lookup (nsaddr_t dst)
 {

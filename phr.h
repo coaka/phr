@@ -29,13 +29,12 @@
 
 #include <cmu-trace.h>
 #include <priqueue.h>
-#include <phr/phr_rqueue.h>
+//#include <phr/phr_rqueue.h>
 #include <classifier/classifier-port.h>
 #include "mac/mac.h"
 #include "mac/ll.h"
 #include <mobilenode.h>
 #include "timer-handler.h"
-//#include "lib/bsd-list.h"
 #define NETWORK_DIAMETER		64
 #define ALLOWED_BC_LOSS                 3	//packets
 //#define DEFAULT_BEACON_INTERVAL               10 // seconds;
@@ -339,10 +338,6 @@ protected:
     return 1 && target_;
   }
   //phr_rqueue rqueue;
-
-
-
-
 
 
 

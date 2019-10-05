@@ -93,31 +93,9 @@ struct hdr_phr_bc {
   }
 };
 
-// ======================================================================
-// phr_msg Packet Format  
-// ======================================================================
-/*
-struct hdr_wfrp_beacon {
-	u_int8_t 	pkt_type;    // type of packet : Beacon or Error
-	u_int8_t	beacon_hops;  // hop count, increadecreases as beacon is forwarded
-	u_int32_t	beacon_id;   // unique identifier for the beacon
-	nsaddr_t	beacon_src;  // source address of beacon, this is sink address
-        nsaddr_t        beacon_dst;  // destination address to check if a bcn reached its dst.
-	u_int32_t	beacon_posx; // x position of beacon source, if available
-	u_int32_t	beacon_posy; // y position of beacon source, if available
-        u_int8_t        ph;          // Previous hop.
-        bool            known;       // known flag.
-	double		timestamp;   // emission time of beacon message
-        u_int8_t        last_node_hops_to_dst; //no. of hops for Previous Hop  to dst
 
-	inline int size() {
-		int sz = 0;
-		sz = sizeof(struct hdr_wfrp_beacon);
-		assert(sz>=0);
-		return sz;
-	}
-};
-*/
+
+
 
 
 
