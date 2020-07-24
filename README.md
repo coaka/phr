@@ -59,7 +59,7 @@ type in terminal:
 patch -p0 < phr.patch
 
 
-11- Know you just need to recompile ns2,
+11- Now you just need to recompile ns2,
 
 cd  ns-allinone-2.35/ns-2.35 
 
