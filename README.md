@@ -29,16 +29,21 @@ https://sourceforge.net/projects/nsnam/files/latest/download/
 add the following lines and change "yourname" accordingly. 
 
 #LD_LIBRARY_PATH
+
 OTCL_LIB=/home/yourname/ns-allinone-2.35/otcl-1.14
 NS2_LIB=/home/yourname/ns-allinone-2.35/lib
 X11_LIB=/usr/X11R6/lib
 USR_LOCAL_LIB=/usr/local/lib
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OTCL_LIB:$NS2_LIB:$X11_LIB:$USR_LOCAL_LIB
+
 #TCL_LIBRARY
+
 TCL_LIB=/home/yourname/ns-allinone-2.35/tcl8.5.10/library
 USR_LIB=/usr/lib
 export TCL_LIBRARY=$TCL_LIB:$USR_LIB
+
 #PATH
+
 XGRAPH=/home/yourname/ns-allinone-2.35/bin:/home/yourname/ns-allinone-2.35/tcl8.5.10/unix:/home/yourname/ns-allinone-2.35/tk8.5.10/unix
 #the above two lines beginning from xgraph and ending with unix should come on the same line
 NS=/home/yourname/ns-allinone-2.35/ns-2.35/ 
