@@ -72,10 +72,7 @@ export CC=gcc-4.8 CXX=g++-4.8 && make
 
 NOW ns2 with PHR is ready to run .tcl files.
 
-You can find a simple scienaro with PHR in the git, to run it type in terminal:
+You can find a simple scienaro with PHR in the git, to run it, type in terminal:
 
-cd ..
-
-cd ..
 
 ns phr_scenario.tcl 
