@@ -1,8 +1,9 @@
 Previous Hop Routing:
 A new routing protocol for VANETs.
-A tutorial on how to use the PHR code in NS2 is provided as follows: directory.
 
-Unlike earlier version of Ubuntu, the 18.04 version does not support the direct installation of ns2, because of the latest C/C++ compiler (7.x), but the latest C/C++ compiler supported by ns2 is gcc-4.8.  Here, we’re going to install ns2.35 on Ubuntu version 18.04:
+A tutorial on how to install ns-2.35 on Ubuntu 18.04 then add the PHR code to it is provided as follows:
+
+The new version of Ubuntu 18.04 does not support the direct installation of ns-2.35, due to the latest C/C++ compiler (7.x), however, the C/C++ compiler version 4.8 is supported by ns2.  Here, we’re going to install ns2.35 on Ubuntu version 18.04:
 
 1- Download ns2.35 package.
 https://sourceforge.net/projects/nsnam/files/latest/download/
