@@ -19,7 +19,7 @@ https://sourceforge.net/projects/nsnam/files/latest/download/
 6- gedit  ns-allinone-2.35/ns-2.35/linkstate/ls.h
     in line number 137, change erase to this->erase 
 
-7- cd   ns-allinone-2.35/ns-2.35/
+7- cd   ns-allinone-2.35/
 
 8- export CC=gcc-4.8 CXX=g++-4.8 && ./install
 
@@ -56,12 +56,26 @@ then
 
 type in terminal:
 
+cd ..
+
 patch -p0 < phr.patch
 
 
 11- Now you just need to recompile ns2,
+type in terminal the following commands:
 
 cd  ns-allinone-2.35/ns-2.35 
 
-then type in terminal:  export CC=gcc-4.8 CXX=g++-4.8 && make
+./configure --with-tcl-ver=8.5
 
+export CC=gcc-4.8 CXX=g++-4.8 && make
+
+NOW ns2 with PHR is ready to run .tcl files.
+
+You can find a simple scienaro with PHR in the git, to run it type in terminal:
+
+cd ..
+
+cd ..
+
+ns phr_scenario.tcl 
