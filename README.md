@@ -87,18 +87,18 @@ ns phr_scenario.tcl
 ~~~
 *In order to get results out from .tr simulation file, python scripts are provided.*
 
-First To get Packet Delivery Ratio (PDR), all you need is to run pdr.py as follows:
++ To get Packet Delivery Ratio (PDR), all you need is to run pdr.py as follows:
 ~~~
 python pdr.py ns2_tracefilename.tr
 ~~~
 ns2_tracefilename.tr is trace filename that you've got after run simulation
-Second To calculate CDF delay, all you need is to pass four different .tr files as parameters to delaypdf.py script to be ploated.
++ To calculate CDF delay, all you need is to pass four different .tr files as parameters to delaypdf.py script to be ploated.
 ~~~
 python delaypdf.py aodv.tr olsr.tr gpsr.tr phr.tr  
 ~~~
 Note: do not change the .tr files order. if you need to plot two or more CDF delay protocols, please, change the script accordingly. 
 
-Third To calculate Probability of Drop Burst Length(DBL), (A new metric proposed by Awos Kh. Ali & Iain Phillips), you need to run the following two python scripts as follows:
++ To calculate Probability of Drop Burst Length(DBL), (A new metric proposed by Awos Kh. Ali & Iain Phillips), you need to run the following two python scripts as follows:
 ~~~
 python pre_dbl.py ns2_tracefilename.tr > new_file.txt
 ~~~
