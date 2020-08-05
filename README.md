@@ -107,6 +107,6 @@ python pre_dbl.py ns2_tracefilename.tr > new_file.txt
 Then the pass the new_file.txt to the second script as follows:
 
 ~~~
-python calc_dbl new_file.txt > ready_to_plot.txt
+python calc_dbl.py new_file.txt > ready_to_plot.txt
 ~~~
 Now ready_to_plot.txt contains probability of DBL for a certain simulation, all you need now is to plot it.
