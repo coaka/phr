@@ -52,7 +52,10 @@ NS=/home/yourname/ns-allinone-2.35/ns-2.35/
 NAM=/home/yourname/ns-allinone-2.35/nam-1.15/ 
 PATH=$PATH:$XGRAPH:$NS:$NAM
 ~~~
-
+Then
+~~~
+source ~/.bashrc
+~~~
 10. patch the PHR protocol by to place  phr.patch in the same directory of ns-allinone-2.35
 then 
 
@@ -79,5 +82,29 @@ NOW ns2 with PHR is ready to run .tcl files.
 
 You can find a simple scienaro with PHR in the git, to run it, type in terminal:
 
-
+~~~
 ns phr_scenario.tcl 
+~~~
+*In order to get results out from .tr simulation file, python scripts are provided.*
+
+First To get Packet Delivery Ratio (PDR), all you need is to run pdr.py as follows:
+~~~
+python pdr.py ns2_tracefilename.tr
+~~~
+ns2_tracefilename.tr is trace filename that you've got after run simulation
+Second To calculate CDF delay, all you need is to pass four different .tr files as parameters to delaypdf.py script to be ploated.
+~~~
+python delaypdf.py aodv.tr olsr.tr gpsr.tr phr.tr  
+~~~
+Note: do not change the .tr files order. if you need to plot two or more CDF delay protocols, please, change the script accordingly. 
+
+Third To calculate Probability of Drop Burst Length(DBL), (A new metric proposed by Awos Kh. Ali & Iain Phillips), you need to run the following two python scripts as follows:
+~~~
+python pre_dbl.py ns2_tracefilename.tr > new_file.txt
+~~~
+Then the pass the new_file.txt to the second script as follows:
+
+~~~
+python calc_dbl new_file.txt > ready_to_plot.txt
+~~~
+Now ready_to_plot.txt contains probability of DBL for a certain simulation, all you need now is to plot it.
