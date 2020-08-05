@@ -86,6 +86,8 @@ You can find a simple scienaro with PHR in the git, to run it, type in terminal:
 ns phr_scenario.tcl 
 ~~~
 *In order to get results out from .tr simulation file, python scripts are provided.*
+ 
+**Note: .tr files need to be in new trace format as can be seen in phr_scenario.tcl configurations**
 
 + To get Packet Delivery Ratio (PDR), all you need is to run pdr.py as follows:
 ~~~
