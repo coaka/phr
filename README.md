@@ -98,7 +98,7 @@ python delaypdf.py aodv.tr olsr.tr gpsr.tr phr.tr
 ~~~
 Note: do not change the .tr files order. if you need to plot two or more CDF delay protocols, please, change the script accordingly. 
 
-+ To calculate Probability of Drop Burst Length(DBL), (A new metric proposed by Awos Kh. Ali & Iain Phillips in [This paper](https://ieeexplore.ieee.org/document/7760829).), you need to run the following two python scripts as follows:
++ To calculate Probability of Drop Burst Length(DBL), (A new metric proposed by Awos Kh. Ali & Iain Phillips in [This paper](https://ieeexplore.ieee.org/document/7760829)), you need to run the following two python scripts as follow:
 ~~~
 python pre_dbl.py ns2_tracefilename.tr > new_file.txt
 ~~~
