@@ -110,3 +110,11 @@ Then the pass the new_file.txt to the second script as follows:
 python calc_dbl.py new_file.txt > ready_to_plot.txt
 ~~~
 Now ready_to_plot.txt contains probability of DBL for a certain simulation, all you need now is to plot it.
+
+To plot probability of dbl you need to run the following python script and pass 3 dbl files for 3 different protocols as follows:
+
+~~~
+python plot_dbl.py ready_to_plot_aodv.txt ready_to_plot_olsr.txt ready_to_plot_phr.txt 
+~~~
+
+You can change plot_dbl.py to plot more or less dbl files. Change generated graph title accordingly. 
